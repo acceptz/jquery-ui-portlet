@@ -58,12 +58,22 @@
                     if(p.icon) {
                         title.prepend("<span class='ui-portlet-header-icon ui-icon " + p.icon + "'></span>");
                     }
-
+                    
+                    var refreshable = (typeof($(p).attr("refreshable")) == "undefined") ? true : p.refreshable;
+                    var toggleable = (typeof($(p).attr("toggleable")) == "undefined") ? true : p.toggleable;
+                    var closeable = (typeof($(p).attr("closeable")) == "undefined") ? true : p.closeable;
+                    
                     // event element
-                    title.prepend("<a href='#' class='ui-corner-all'><span class='ui-icon ui-icon-refresh ui-portlet-refresh'></span></a>");
-                    title.prepend("<a href='#' class='ui-corner-all'><span class='ui-icon ui-icon-minusthick ui-portlet-toggle'></span></a>");
-                    title.prepend("<a href='#' class='ui-corner-all'><span class='ui-icon ui-icon-closethick ui-portlet-close'></span></a>");
-
+                    if(refreshable){
+                    	title.prepend("<a href='#' class='ui-corner-all'><span class='ui-icon ui-icon-refresh ui-portlet-refresh'></span></a>");
+                    }
+                    if(toggleable){
+                    	title.prepend("<a href='#' class='ui-corner-all'><span class='ui-icon ui-icon-minusthick ui-portlet-toggle'></span></a>");
+                    }
+                    if(closeable){
+                    	title.prepend("<a href='#' class='ui-corner-all'><span class='ui-icon ui-icon-closethick ui-portlet-close'></span></a>");
+                    }
+                    
                     // content
                     var ct = $('<div/>', {
                         'class': 'ui-portlet-content'
