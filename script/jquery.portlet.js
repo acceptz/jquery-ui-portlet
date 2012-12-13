@@ -1,5 +1,5 @@
 /*
- * jquery.portlet 1.1.0
+ * jquery.portlet 1.1.1
  *
  * Copyright (c) 2012
  *   咖啡兔 (http://www.kafeitu.me)
@@ -55,7 +55,7 @@
                     }).appendTo(item);
 
                     // add icon for title
-                    if (p.icon) {
+                    if(p.icon) {
                         title.prepend("<span class='ui-portlet-header-icon ui-icon " + p.icon + "'></span>");
                     }
 
@@ -148,8 +148,8 @@
                     }).removeData('width').removeData('height');
 
                     // callback
-                    if (p.singleView) {
-                        if ($.isFunction(p.singleView.recovery)) {
+                    if(p.singleView) {
+                        if($.isFunction(p.singleView.recovery)) {
                             p.singleView.recovery.call($item, p);
                         }
                     }
@@ -168,17 +168,17 @@
 
                     // set width and height when enable single view
                     var wh = {};
-                    if (p.singleView) {
+                    if(p.singleView) {
                         // use custom width and height
-                        if (p.singleView.width) {
-                            if ($.isFunction(p.singleView.width)) {
+                        if(p.singleView.width) {
+                            if($.isFunction(p.singleView.width)) {
                                 wh.width = p.singleView.width.call($item, p);
                             } else {
                                 wh.width = p.singleView.width;
                             }
                         }
-                        if (p.singleView.height) {
-                            if ($.isFunction(p.singleView.height)) {
+                        if(p.singleView.height) {
+                            if($.isFunction(p.singleView.height)) {
                                 wh.height = p.singleView.height.call($item, p);
                             } else {
                                 wh.height = p.singleView.height;
@@ -196,7 +196,7 @@
                     });
 
                     // callback
-                    if (p.singleView && $.isFunction(p.singleView.enable)) {
+                    if(p.singleView && $.isFunction(p.singleView.enable)) {
                         p.singleView.enable.call($item, p);
                     }
                 }
@@ -231,6 +231,11 @@
             if(value === true) {
                 $(this.element).find('.ui-portlet-header').css('cursor', 'move');
                 st.sortable('enable');
+                $(".ui-portlet-content", this.element).draggable({
+                    start: function(e, ui) {
+                        return false;
+                    }
+                });
             } else {
                 $(this.element).find('.ui-portlet-header').css('cursor', 'default');
                 st.sortable('disable');
@@ -357,25 +362,22 @@
                             content = data;
                             $(ct).html(data);
                         } else if(dataType == 'json') {
-                            if(typeof pio.content.formatter == "function"){
+                            if($.isFunction(pio.content.formatter)) {
                                 content = pio.content.formatter(o, pio, data);
-                            }else{
-                                console.log("You have to set content formatter function for:"+pio.title);
-                                content = "Load Error...";
+                                $(ct).html(content);
                             }
-                            
-                            $(ct).html(content);
                         }
                         _callAfterShow(content);
                         if($.isFunction(cl)) {
                             cl.call(that, data);
                         }
                     },
-                    error : function(xhr, error) {
-                        console.debug(xhr);
-                        console.debug(error);
-                        content = "Load Error...";
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        var content = "<span style='padding:0.2em' class='ui-state-error ui-corner-all'>Load Error...</span>";
                         $(ct).html(content);
+                        if ($.isFunction(pio.content.error)) {
+                            pio.content.error.call(ct, jqXHR, textStatus, errorThrown);
+                        }
                     }
                 });
             }
